@@ -10,7 +10,7 @@ Please let me know if I have something wrong so I can correct it.
 When first looking at the [[http://elm-lang.org][Elm programming language]] a question I had was "What's up with
 the arrows?", when looking at a function signature. Why would a function that takes 2 Ints
 and returns one be type annotated as:
-#+BEGIN_SRC elm
+#+BEGIN_SRC
 Int -> Int -> Int
 #+END_SRC
 A common answer I got was "the last type is the return, everything else is input
@@ -21,28 +21,28 @@ maybe this will help someone else.
 
 I think it might be worth a quick detour into Elm's anonymous functions. In Elm, you can
 easily write an anonymous function by starting with a leading ~\~, then the list of
-parameters, then an arrow ~->~, then the body. You can test this in the ~elm repl~
-#+BEGIN_SRC elm
+parameters, then an arrow ~->~, then the body. You can test this in the ~elm repl~:
+#+BEGIN_SRC
 > \a b -> a + b
 <function> : number -> number -> number
 #+END_SRC
 
 This is simply a function that takes 2 things and adds them. Since a function is a value
 like any other value in Elm, you can assign it to something, like so:
-#+BEGIN_SRC 
+#+BEGIN_SRC
 > myAdder = \a b -> a + b
 <function> : number -> number -> number
 #+END_SRC
 
 And, since this value is of type function, you can call it like a function:
-#+BEGIN_SRC 
+#+BEGIN_SRC
 > myAdder 1 2
 3 : number
 #+END_SRC
 
 So, defining a function like this is equivalent to defining one in
 the "normal" way, and they work in an equivalent manner.
-#+BEGIN_SRC 
+#+BEGIN_SRC
 > myAdder2 a b = a + b
 <function> : number -> number -> number
 > myAdder2 1 2
@@ -53,7 +53,7 @@ So, what's up with the arrows? It turns out that Elm functions are automatically
 What that means is, you can call them with fewer parameters than they expect, and what you
 get back is /another/ function that is expecting the remaining parameters. It's like a
 function that is "holding on" to the parameters you give it, and waiting for the rest.
-#+BEGIN_SRC 
+#+BEGIN_SRC
 > myPlusFourer = myAdder 4
 <function> : number -> number
 #+END_SRC
@@ -61,7 +61,7 @@ function that is "holding on" to the parameters you give it, and waiting for the
 So I gave ~myAdder~ one parameter (~4~) out of the two it was expecting, and what I'm
 given is a function ~myPlusFourer~, which is waiting for the remaining parameter. But,
 it's holding on to the one I gave it, and will use it when called.
-#+BEGIN_SRC 
+#+BEGIN_SRC
 > myPlusFourer 7
 11 : number
 #+END_SRC
@@ -69,11 +69,11 @@ it's holding on to the one I gave it, and will use it when called.
 So, what's up with the arrows? It turns out that although ~->~ isn't being used as an
 operator in this sense, it still has a notion of associativity, which is to the right. So
 when we see
-#+BEGIN_SRC elm
+#+BEGIN_SRC
 number -> number -> number
 #+END_SRC
 it's equivalent to
-#+BEGIN_SRC elm
+#+BEGIN_SRC
 number -> (number -> number)
 #+END_SRC
 
@@ -88,12 +88,12 @@ So, what's up with the arrows?  Let's combine what we know.
 What does this all mean? If we take our ~myPlusFourer~ example, what we end up with is
 something like...
 
-#+BEGIN_SRC 
+#+BEGIN_SRC
 myPlusFourer = (\a -> (\b -> a + b)) 4 
 #+END_SRC
 
 Which works as we expect.
-#+BEGIN_SRC 
+#+BEGIN_SRC
 > myPlusFourer2 = (\a -> (\b -> a + b)) 4
 <function> : number -> number
 > myPlusFourer2 7
@@ -101,8 +101,8 @@ Which works as we expect.
 #+END_SRC
 
 So, what's up with the arrows is that they are noting that functions don't actually take
-multiple parameters.  They take one.  And what they return might be another function that
-ALSO takes one parameter.  Which might return another function which... ad nauseum, until
-you end up with one that returns a non-function value.  But because of the right
+multiple parameters. They take one. And what they return might be another function that
+ALSO takes one parameter. Which might return another function which... ad nauseum, until
+you end up with one that returns a non-function value. But because of the right
 associativity, the parenthesis are unnecessary so it looks like a long string of arrow'ed
-parameters.
+type names.

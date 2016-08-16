@@ -106,3 +106,6 @@ ALSO takes one parameter. Which might return another function which... ad nauseu
 you end up with one that returns a non-function value. But because of the right
 associativity, the parenthesis are unnecessary so it looks like a long string of arrow'ed
 type names.
+
+** Sources
+- [[http://guide.elm-lang.org/types/reading_types.html][This]] was very helpful and provided a bulk of the understanding.
